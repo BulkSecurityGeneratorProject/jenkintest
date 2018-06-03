@@ -33,8 +33,21 @@ node {
     }
 
     stage('packaging') {
-        sh "./mvnw verify -Pprod -DskipTests"
+        sh "./mvnw verify -Pdev -DskipTests"
         archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
     }
 
+
+    def dockerImage
+    stage('build docker') {
+        sh "cp -R src/main/docker target/"
+        sh "cp target/*.war target/docker/"
+        dockerImage = docker.build('docker-login/jenkintest3', 'target/docker')
+    }
+
+    stage('publish docker') {
+        docker.withRegistry('https://registry.hub.docker.com', 'ramazanfirin') {
+            dockerImage.push 'latest'
+        }
+    }
 }
