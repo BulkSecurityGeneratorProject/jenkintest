@@ -42,7 +42,7 @@ node {
     stage('build docker') {
         sh "cp -R src/main/docker target/"
         sh "cp target/*.war target/docker/"
-        dockerImage = docker.build('docker-login/jenkintest3', 'target/docker')
+        dockerImage = docker.build('ramazanfirin/jenkintest3', 'target/docker')
     }
 
     stage('publish docker') {
